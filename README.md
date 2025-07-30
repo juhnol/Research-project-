@@ -11,6 +11,16 @@ This project simulates the transport of passive solutes in two-dimensional incom
 
 ---
 
+## Hypothesis
+
+We hypothesize that using a higher-order numerical integration method, such as the extended Runge-Kutta scheme, will yield significantly more accurate representations of particle trajectories in 2D Gaussian random velocity fields compared to simpler methods like Euler-Maruyama. Specifically:
+
+1. **Streamline fidelity**: Runge-Kutta will better capture the formation of closed streamlines—key features of Gaussian random flows that govern trapping behavior and anomalous dispersion.
+2. **Dispersion accuracy**: The method will produce dispersion coefficients (especially longitudinal growth) that more closely align with theoretical predictions.
+3. **Reduced numerical artifacts**: Runge-Kutta will suppress artificial transverse dispersion and noise-induced diffusion, particularly in high Péclet number regimes.
+
+The aim is to test whether the improved integration leads to observable differences in both trajectory structure and long-time dispersion scaling.
+
 ## Governing Equations
 
 ### 1. Fokker–Planck Equation (macroscopic concentration evolution)
