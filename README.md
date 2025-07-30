@@ -1,825 +1,174 @@
-# Research-project-
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{margin=1in}
 
-Flow in Gaussian Random Fields
+\title{Flow in Gaussian Random Fields}
+\author{John McCance \\ University of Southern California}
+\date{}
 
-Overview
-This project simulates the transport of passive solutes in two-dimensional incompressible Gaussian random velocity fields, as described in Dentz et al., Phys. Rev. E, 2003. It numerically solves the Langevin and Fokker–Planck equations to analyze solute dispersion, using both Euler-Maruyama and extended Runge-Kutta integration. The focus is on capturing critical features like closed streamlines, anisotropic dispersion, and trapping behavior.
+\begin{document}
 
+\maketitle
 
-Governing Equations
-1. Fokker–Planck Equation (macroscopic concentration evolution)
+\section*{Overview}
+This project simulates the transport of passive solutes in two-dimensional incompressible Gaussian random velocity fields, as described in Dentz et al., \textit{Phys. Rev. E}, 2003. It numerically solves the Langevin and Fokker–Planck equations to analyze solute dispersion, using both Euler-Maruyama and extended Runge-Kutta integration. The focus is on capturing critical features like closed streamlines, anisotropic dispersion, and trapping behavior.
 
-∂
-C
-∂
-t
-+
-∇
-⋅
-(
-u
-⃗
-C
-−
-D
-∇
-C
-)
-=
-0
-∂t
-∂C
-​	
- +∇⋅( 
-u
- C−D∇C)=0
+\section*{Governing Equations}
+
+\subsection*{1. Fokker–Planck Equation (macroscopic concentration evolution)}
+
+\[
+\frac{\partial C}{\partial t} + \nabla \cdot (\vec{u} C - D \nabla C) = 0
+\]
+
 Where:
+\begin{itemize}
+  \item $C(\vec{x}, t)$: Solute concentration
+  \item $\vec{u}(\vec{x})$: Velocity field
+  \item $D$: Local diffusion coefficient
+\end{itemize}
 
-C
-(
-x
-⃗
-,
-t
-)
-C( 
-x
- ,t): Solute concentration
-u
-⃗
-(
-x
-⃗
-)
-u
- ( 
-x
- ): Velocity field
-D
-D: Local diffusion coefficient
-2. Langevin Equation (single-particle trajectory)
+\subsection*{2. Langevin Equation (single-particle trajectory)}
 
-d
-X
-⃗
-(
-t
-)
-d
-t
-=
-u
-⃗
-(
-X
-⃗
-(
-t
-)
-)
-+
-ξ
-⃗
-(
-t
-)
-dt
-d 
-X
- (t)
-​	
- = 
-u
- ( 
-X
- (t))+ 
-ξ
-​	
- (t)
-with 
-⟨
-ξ
-i
-(
-t
-)
-ξ
-j
-(
-t
-′
-)
-⟩
-=
-2
-D
-δ
-i
-j
-δ
-(
-t
-−
-t
-′
-)
-with ⟨ξ 
-i
-​	
- (t)ξ 
-j
-​	
- (t 
-′
- )⟩=2Dδ 
-ij
-​	
- δ(t−t 
-′
- )
-🔬 Numerical Methods
-Velocity field:
-Spectral method using:
-u
-i
-(
-x
-⃗
-)
-=
-u
-ˉ
-δ
-i
-1
-+
-2
-σ
-u
-ˉ
-2
-N
-∑
-j
-=
-1
-N
-p
-i
-(
-k
-⃗
-(
-j
-)
-)
-cos
-⁡
-(
-k
-⃗
-(
-j
-)
-⋅
-x
-⃗
-+
-ω
-(
-j
-)
-)
-u 
-i
-​	
- ( 
-x
- )= 
-u
-ˉ
- δ 
-i1
-​	
- +2σ 
-u
-ˉ
-  
-N
-2
-​	
- 
-​	
-  
-j=1
-∑
-N
-​	
- p 
-i
-​	
- ( 
-k
-  
-(j)
- )cos( 
-k
-  
-(j)
- ⋅ 
-x
- +ω 
-(j)
- )
-where 
-p
-i
-(
-k
-⃗
-)
-=
-δ
-1
-i
-−
-k
-1
-k
-i
-∣
-k
-⃗
-∣
-2
-p 
-i
-​	
- ( 
-k
- )=δ 
-1i
-​	
- − 
-∣ 
-k
- ∣ 
-2
- 
-k 
-1
-​	
- k 
-i
-​	
- 
-​	
-  ensures incompressibility.
-Particle simulation:
-Euler-Maruyama method (1st-order accuracy)
-Extended Runge-Kutta (order 
-Δ
-t
-3
-/
-2
-Δt 
-3/2
- ):
-More accurate in high Péclet number (
-Pe
-=
-u
-ˉ
-ℓ
-D
-≫
-1
-Pe= 
-D
-u
-ˉ
- ℓ
-​	
- ≫1) regimes
-Dispersion coefficients:
+\[
+\frac{d\vec{X}(t)}{dt} = \vec{u}(\vec{X}(t)) + \vec{\xi}(t)
+\]
+
+with:
+
+\[
+\langle \xi_i(t) \xi_j(t') \rangle = 2D \, \delta_{ij} \, \delta(t - t')
+\]
+
+\section*{Numerical Methods}
+
+\textbf{Velocity field (spectral method):}
+
+\[
+u_i(\vec{x}) = \bar{u} \, \delta_{i1} + 2 \sigma \bar{u} \sum_{j=1}^{N} p_i(\vec{k}^{(j)}) \cos(\vec{k}^{(j)} \cdot \vec{x} + \omega^{(j)})
+\]
+
+where:
+
+\[
+p_i(\vec{k}) = \delta_{1i} - \frac{k_1 k_i}{|\vec{k}|^2}
+\]
+
+ensures incompressibility.
+
+\textbf{Particle simulation:}
+\begin{itemize}
+  \item Euler-Maruyama method (1st-order accuracy)
+  \item Extended Runge-Kutta (order $\Delta t^{3/2}$): More accurate in high Péclet number ($\text{Pe} = \frac{\bar{u} \ell}{D} \gg 1$) regimes
+\end{itemize}
+
+\textbf{Dispersion coefficients:}
+
 Effective:
-D
-i
-j
-eff
-(
-t
-)
-=
-1
-2
-d
-d
-t
-[
-⟨
-x
-i
-(
-t
-)
-x
-j
-(
-t
-)
-⟩
-−
-⟨
-x
-i
-(
-t
-)
-⟩
-⟨
-x
-j
-(
-t
-)
-⟩
-]
-D 
-ij
-eff
-​	
- (t)= 
-2
-1
-​	
-  
-dt
-d
-​	
- [⟨x 
-i
-​	
- (t)x 
-j
-​	
- (t)⟩−⟨x 
-i
-​	
- (t)⟩⟨x 
-j
-​	
- (t)⟩]
+
+\[
+D_{ij}^{\text{eff}}(t) = \frac{1}{2} \frac{d}{dt} \left[ \langle x_i(t) x_j(t) \rangle - \langle x_i(t) \rangle \langle x_j(t) \rangle \right]
+\]
+
 Ensemble:
-D
-i
-j
-ens
-(
-t
-)
-=
-1
-2
-d
-d
-t
-[
-⟨
-x
-i
-(
-t
-)
-x
-j
-(
-t
-)
-⟩
-‾
-−
-⟨
-x
-i
-(
-t
-)
-⟩
-‾
- 
-⟨
-x
-j
-(
-t
-)
-⟩
-‾
-]
-D 
-ij
-ens
-​	
- (t)= 
-2
-1
-​	
-  
-dt
-d
-​	
- [ 
-⟨x 
-i
-​	
- (t)x 
-j
-​	
- (t)⟩
-​	
- − 
-⟨x 
-i
-​	
- (t)⟩
-​	
-  
-⟨x 
-j
-​	
- (t)⟩
-​	
- ]
 
+\[
+D_{ij}^{\text{ens}}(t) = \frac{1}{2} \frac{d}{dt} \left[ \overline{\langle x_i(t) x_j(t) \rangle} - \overline{\langle x_i(t) \rangle} \, \overline{\langle x_j(t) \rangle} \right]
+\]
 
- Key Phenomena
-Closed Streamlines:
-In 2D Gaussian fields, particles can become trapped:
-u
-⃗
-=
-∇
-⊥
-ψ
-(
-x
-⃗
-)
-⇒
-Streamlines 
-ψ
-=
-const
-u
- =∇ 
-⊥
- ψ( 
-x
- )⇒Streamlines ψ=const
+\section*{Key Phenomena}
+
+\textbf{Closed Streamlines:}
+
+\[
+\vec{u} = \nabla^\perp \psi(\vec{x}) \Rightarrow \text{Streamlines: } \psi = \text{const}
+\]
+
 Leads to subdiffusion and localized zones without dispersion unless noise breaks symmetry.
-Linear Growth of Longitudinal Dispersion:
-Even in the absence of local diffusion:
-D
-L
-ens
-(
-t
-)
-∼
-r
-(
-1
-−
-r
-)
-u
-2
-t
-D 
-L
-ens
-​	
- (t)∼r(1−r)u 
-2
- t
+
+\textbf{Linear Growth of Longitudinal Dispersion:}
+
+\[
+D_L^{\text{ens}}(t) \sim r(1 - r) u^2 t
+\]
+
 (See Appendix D of Dentz et al., 2003)
 
-Experimental Setup
-Velocity field modes: N = 20–64 harmonic modes
-Particles: Gaussian initial distribution
-Boundary conditions: Infinite domain with decay at infinity
-Metrics: Trajectories, streamline plots, longitudinal/transverse dispersion
+\section*{Experimental Setup}
 
+\begin{itemize}
+  \item Velocity field modes: $N = 20$–$64$ harmonic modes
+  \item Particles: Gaussian initial distribution
+  \item Boundary conditions: Infinite domain with decay at infinity
+  \item Metrics: Trajectories, streamline plots, longitudinal/transverse dispersion
+\end{itemize}
 
+\section*{Physical Constraints}
 
-Physical Constraints
-To ensure realistic simulation of solute transport in incompressible flow fields, the following physical constraints are enforced:
+\textbf{Incompressibility:}
 
-1. Incompressibility
+\[
+\nabla \cdot \vec{u} = 0
+\]
 
-The velocity field 
-u
-⃗
-(
-x
-⃗
-)
-u
- ( 
-x
- ) must be divergence-free:
+Enforced through projection:
 
-∇
-⋅
-u
-⃗
-=
-0
-∇⋅ 
-u
- =0
-This condition ensures volume conservation and is enforced through the spectral method using projection:
+\[
+p_i(\vec{k}) = \delta_{1i} - \frac{k_1 k_i}{|\vec{k}|^2}
+\]
 
-p
-i
-(
-k
-⃗
-)
-=
-δ
-1
-i
-−
-k
-1
-k
-i
-∣
-k
-⃗
-∣
-2
-p 
-i
-​	
- ( 
-k
- )=δ 
-1i
-​	
- − 
-∣ 
-k
- ∣ 
-2
- 
-k 
-1
-​	
- k 
-i
-​	
- 
-​	
- 
 Each harmonic mode satisfies incompressibility individually.
 
+\textbf{Mass Conservation:}
 
-2. Mass Conservation
+\[
+\int C(\vec{x}, t) \, d\vec{x} = \text{constant}
+\]
 
-The total mass of the solute must be conserved over time:
-
-∫
-C
-(
-x
-⃗
-,
-t
-)
- 
-d
-x
-⃗
-=
-constant
-∫C( 
-x
- ,t)d 
-x
- =constant
 Simulations verify this by checking conservation across timesteps, especially in low-diffusion regimes where numerical error could accumulate.
 
-3. Energy Consistency / Velocity Correlation
+\textbf{Velocity Correlation / Energy Consistency:}
 
-The velocity field must obey the theoretical autocorrelation:
+\[
+\langle \tilde{u}_i(\vec{k}) \tilde{u}_j(\vec{k}') \rangle = (2\pi)^2 \delta(\vec{k} + \vec{k}') \, p_i(\vec{k}) p_j(\vec{k}) \, C_{ff}(\vec{k})
+\]
 
-⟨
-u
-~
-i
-(
-k
-⃗
-)
-u
-~
-j
-(
-k
-′
-⃗
-)
-⟩
-=
-(
-2
-π
-)
-2
-δ
-(
-k
-⃗
-+
-k
-′
-⃗
-)
-p
-i
-(
-k
-⃗
-)
-p
-j
-(
-k
-⃗
-)
-C
-f
-f
-(
-k
-⃗
-)
-⟨ 
-u
-~
-  
-i
-​	
- ( 
-k
- ) 
-u
-~
-  
-j
-​	
- ( 
-k 
-′
- 
- )⟩=(2π) 
-2
- δ( 
-k
- + 
-k 
-′
- 
- )p 
-i
-​	
- ( 
-k
- )p 
-j
-​	
- ( 
-k
- )C 
-ff
-​	
- ( 
-k
- )
-With:
+with:
 
-C
-f
-f
-(
-k
-⃗
-)
-=
-σ
-2
-(
-2
-π
-ℓ
-2
-)
-exp
-⁡
-(
-−
-∣
-k
-⃗
-∣
-2
-ℓ
-2
-2
-)
-C 
-ff
-​	
- ( 
-k
- )=σ 
-2
- (2πℓ 
-2
- )exp(− 
-2
-∣ 
-k
- ∣ 
-2
- ℓ 
-2
- 
-​	
- )
-This ensures the generated field maintains correct variance 
-σ
-2
-σ 
-2
-  and correlation length 
-ℓ
-ℓ, as required by the Gaussian assumption.
+\[
+C_{ff}(\vec{k}) = \frac{\sigma^2}{2\pi \ell^2} \exp\left( -\frac{|\vec{k}|^2 \ell^2}{2} \right)
+\]
 
-Dispersion Scaling
+\section*{Dispersion Scaling}
 
 Correct long-time behavior must emerge:
 
-Longitudinal dispersion:
-D
-L
-ens
-(
-t
-)
-∼
-t
-(linear growth)
-D 
-L
-ens
-​	
- (t)∼t(linear growth)
-Transverse dispersion:
-D
-T
-ens
-(
-t
-)
-→
-const
-(saturation)
-D 
-T
-ens
-​	
- (t)→const(saturation)
+\begin{itemize}
+  \item Longitudinal dispersion: $D_L^{\text{ens}}(t) \sim t$ (linear growth)
+  \item Transverse dispersion: $D_T^{\text{ens}}(t) \rightarrow \text{const}$ (saturation)
+\end{itemize}
+
 These scaling laws validate that both advection and diffusion are resolved appropriately.
 
+\section*{Summary of Results}
 
-Summary of Results:
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Method} & \textbf{Behavior Captured} & \textbf{Notes} \\\hline
+Euler-Maruyama & Isotropic diffusion only & Misses streamlines, overestimates spread \\\hline
+Runge-Kutta & Anisotropic dispersion, streamline trapping, $D_L$ growth & Matches Dentz et al. 2003 findings \\\hline
+\end{tabular}
+\end{center}
 
+\section*{Author}
 
-| Method         | Behavior Captured                                      | Notes                                    |
-| -------------- | ------------------------------------------------------ | ---------------------------------------- |
-| Euler-Maruyama | Isotropic diffusion only                               | Misses streamlines, overestimates spread |
-| Runge-Kutta    | Anisotropic dispersion, streamline trapping, DL growth | Matches Dentz et al. 2003 findings       |
-
-
-
-Author
-John McCance
+John McCance \\
 University of Southern California
+
+\end{document}
 
 
 
